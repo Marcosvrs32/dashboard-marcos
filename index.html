@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Produtividade Estratégica | Marcos Vinícius</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-mode">
+
+    <header class="topbar">
+        <h1>Dashboard de Produtividade Estratégica</h1>
+        <nav aria-label="Menu de ferramentas">
+            <button id="theme-toggle" class="btn btn-outline" aria-pressed="false" title="Mudar tema">
+                Alternar tema
+            </button>
+        </nav>
+    </header>
+
+    <!-- Grelha principal: 5 cartões (1 coluna em mobile) -->
+    <main class="dashboard-grid">
+
+        <!-- WIDGET 1: Clima -->
+        <section id="weather-section" class="card" aria-labelledby="weather-title">
+            <header class="card-header"><h2 id="weather-title">Clima e tempo</h2></header>
+            <div class="card-body">
+                <div id="weather-container" aria-live="polite">
+                    <p class="loading-text">A buscar previsão do tempo...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- WIDGET 2: Cotações -->
+        <section id="quotes-section" class="card" aria-labelledby="quotes-title">
+            <header class="card-header"><h2 id="quotes-title">Cotação de moedas</h2></header>
+            <div class="card-body">
+                <div id="quotes-container" aria-live="polite">
+                    <p class="loading-text">A buscar cotações...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- WIDGET 3: Tarefas -->
+        <section id="todo-section" class="card" aria-labelledby="todo-title">
+            <header class="card-header"><h2 id="todo-title">Lista de tarefas</h2></header>
+            <div class="card-body">
+                <div class="todo-input-group">
+                    <input type="text" id="todo-input" placeholder="Adicionar nova tarefa..." aria-label="Campo para nova tarefa">
+                    <button id="add-todo-btn" class="btn btn-success">Adicionar</button>
+                </div>
+                <div class="todo-list-container">
+                    <ul id="todo-list" aria-live="polite"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- WIDGET 4: Calculadora de prazos -->
+        <section id="deadline-section" class="card" aria-labelledby="deadline-title">
+            <header class="card-header"><h2 id="deadline-title">Calculadora de prazos</h2></header>
+            <div class="card-body">
+                <form id="deadline-form" class="deadline-form" novalidate>
+                    <div class="field">
+                        <label for="deadline-goal-input">Evento ou meta</label>
+                        <input type="text" id="deadline-goal-input" maxlength="80" placeholder="Ex.: Entregar o relatório final" required>
+                    </div>
+                    <div class="field">
+                        <label for="start-date">Data inicial</label>
+                        <input type="date" id="start-date" required>
+                    </div>
+                    <div class="field">
+                        <label for="days-qty">Quantidade de dias</label>
+                        <input type="number" id="days-qty" min="0" step="1" placeholder="Ex.: 15" required>
+                    </div>
+                    <div class="field">
+                        <label for="day-type">Tipo de contagem</label>
+                        <select id="day-type">
+                            <option value="corridos">Dias corridos</option>
+                            <option value="uteis">Dias úteis</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="calc-btn" class="btn btn-success">Calcular</button>
+                </form>
+                <div id="deadline-result" class="deadline-result" aria-live="polite"></div>
+            </div>
+        </section>
+
+        <!-- WIDGET 5: Notícias -->
+        <section id="news-section" class="card" aria-labelledby="news-title">
+            <header class="card-header"><h2 id="news-title">Últimas notícias</h2></header>
+            <div class="card-body">
+                <div id="news-container" aria-live="polite">
+                    <p class="loading-text">A buscar atualizações em tempo real...</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Projeto Dashboard Interativo | Desenvolvido por Marcos Vinícius Rodrigues e Souza e Equipe</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
+/html>
