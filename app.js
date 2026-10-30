@@ -1,8 +1,6 @@
 'use strict';
 
-/* ==========================================================
-   1. ALTERNADOR DE TEMA (Dark/Light) — preferência persistida
-   ========================================================== */
+/*  1. ALTERNADOR DE TEMA (Dark/Light) — preferência persistida */
 const body = document.body;
 const themeToggleBtn = document.getElementById('theme-toggle');
 
@@ -23,10 +21,9 @@ themeToggleBtn.addEventListener('click', () => {
 });
 
 
-/* ==========================================================
-   2. GESTOR DE TAREFAS
+/*   2. GESTOR DE TAREFAS
    Estrutura: [{ id: 1, text: "Exemplo", completed: false }]
-   ========================================================== */
+   */
 const STORAGE_KEY = 'minhasTarefas';
 const todoInput = document.getElementById('todo-input');
 const addTodoBtn = document.getElementById('add-todo-btn');
@@ -117,9 +114,7 @@ todoInput.addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); }
 renderTasks();
 
 
-/* ==========================================================
-   3. CALCULADORA DE PRAZOS
-   ========================================================== */
+/*3. CALCULADORA DE PRAZOS */
 const deadlineForm = document.getElementById('deadline-form');
 const deadlineResult = document.getElementById('deadline-result');
 
@@ -183,9 +178,8 @@ deadlineForm.addEventListener('submit', event => {
 });
 
 
-/* ==========================================================
-   4. APIs (Clima, Cotações e Notícias)
-   ========================================================== */
+/*  4. APIs (Clima, Cotações e Notícias)
+ */
 
 const PIXEL_COLORS = {
     Y: '#FFD23F', M: '#FFF1A8', W: '#FFFFFF', g: '#C9DDF2', D: '#8FA3B8',
