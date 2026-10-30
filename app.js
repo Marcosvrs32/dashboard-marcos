@@ -254,15 +254,23 @@ function skyFromCloudCover(cover, isDay) {
 }
 
 /** Códigos da OMM para chuva/nevoeiro/tempestade; para o resto, usa a cobertura de nuvens. */
-function classifyWeather({ code, isDay, cloud }) {
+function classifyWeather({ code, isDay, cloud, precip = 0, recentRain = 0 }) {
     if (code === 45 || code === 48) return { scene: 'fog', label: 'Nevoeiro' };
     if (code >= 51 && code <= 57) return { scene: 'drizzle', label: 'Garoa' };
     if (code >= 61 && code <= 67) return { scene: 'rain', label: 'Chuva' };
     if (code >= 80 && code <= 86) return { scene: 'rain', label: 'Pancadas de chuva' };
     if (code >= 95 && code <= 99) return { scene: 'storm', label: 'Tempestade' };
 
+    // Se a API mede chuva agora, mas o código não indicou chuva, confia na medição
+    if (precip >= 2.5) return { scene: 'rain', label: 'Chuva' };
+    if (precip > 0) return { scene: 'drizzle', label: 'Garoa' };
+
     // Códigos 0, 1, 2, 3 (e qualquer código desconhecido): céu definido pelas nuvens
-    return skyFromCloudCover(cloud, isDay);
+    const sky = skyFromCloudCover(cloud, isDay);
+
+    // Choveu nas últimas horas: não mostra sol
+    if (recentRain > 0.1 && sky.scene !== 'clear') return { scene: 'cloud', label: 'Nublado, choveu há pouco' };
+    return sky;
 }
 
 function buildWeatherIcon(scene, label, isDay) {
@@ -281,6 +289,7 @@ function buildWeatherIcon(scene, label, isDay) {
 
 const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=-8.7612&longitude=-63.9039'
     + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,is_day,precipitation,weather_code,cloud_cover,wind_speed_10m'
+    + '&hourly=precipitation&past_hours=3&forecast_hours=1'
     + '&daily=precipitation_probability_max&forecast_days=1&timezone=America%2FPorto_Velho';
 
 async function getWeatherOpenMeteo() {
@@ -291,6 +300,8 @@ async function getWeatherOpenMeteo() {
     return {
         temp: cur.temperature_2m, feels: cur.apparent_temperature, humidity: cur.relative_humidity_2m,
         wind: cur.wind_speed_10m, code: cur.weather_code, cloud: cur.cloud_cover, isDay: cur.is_day === 1,
+        precip: cur.precipitation || 0,
+        recentRain: ((d.hourly && d.hourly.precipitation) || []).reduce((a, b) => a + (b || 0), 0),
         rainChance: d.daily && d.daily.precipitation_probability_max[0],
         time: cur.time.split('T')[1]
     };
@@ -448,7 +459,16 @@ fetchWeather();
 fetchQuotes();
 fetchNews();
 
-// Temporizadores ajustados conforme a sua preferência:
-setInterval(fetchWeather, 5 * 60 * 1000);   // Clima atualiza a cada 5 minutos (tempo real)
-setInterval(fetchQuotes, 5 * 60 * 1000);    // Cotações atualizam a cada 5 minutos (tempo real)
-setInterval(fetchNews, 5 * 60 * 1000);      // Notícias atualizam a cada 5 minutos exatos
+// Temporizadores (em milissegundos)
+setInterval(fetchWeather, 60 * 1000);       // Clima: a cada 1 minuto (a fonte só renova a cada ~15 min)
+setInterval(fetchQuotes, 30 * 1000);        // Cotações: a cada 30 segundos
+setInterval(fetchNews, 5 * 60 * 1000);      // Notícias: a cada 5 minutos
+
+// Ao voltar para a aba, atualiza tudo na hora (abas em segundo plano ficam lentas)
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        fetchWeather();
+        fetchQuotes();
+        fetchNews();
+    }
+});
